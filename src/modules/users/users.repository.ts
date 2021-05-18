@@ -4,9 +4,11 @@ import { EntityRepository, Repository } from 'typeorm';
 import { User } from './users.entity';
 import * as crypto from 'crypto';
 import * as bcrypt from 'bcrypt';
+
 import {
   ConflictException,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { CredentialsDto } from '../auth/dtos/credentials.dto';
 
@@ -24,6 +26,7 @@ export class UserRepository extends Repository<User> {
     user.email = email;
     user.role = role;
     user.phone = phone;
+    user.image_url = null;
     user.confirmationToken = crypto.randomBytes(32).toString('hex');
     user.salt = await bcrypt.genSalt();
     user.password = await this.hashPassword(password, user.salt);
@@ -55,6 +58,23 @@ export class UserRepository extends Repository<User> {
     } else {
       return null;
     }
+  }
+
+  async uploadProfileImage(file: Express.Multer.File, user: User) {
+    const findUser = await this.findOne(user.id);
+    if (!findUser) {
+      throw new NotFoundException('Usuário não encontrado.');
+    }
+    const response = {
+      originalname: file.originalname,
+      filename: file.filename,
+    };
+
+    findUser.image_url = `http://localhost:3000/users/${response.filename}`;
+
+    await findUser.save();
+
+    return findUser;
   }
 
   private async hashPassword(password: string, salt: string): Promise<string> {

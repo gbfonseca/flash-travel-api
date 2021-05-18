@@ -37,6 +37,9 @@ export class User extends BaseEntity {
   @Column({ type: 'varchar' })
   phone: string;
 
+  @Column({ type: 'varchar', nullable: true })
+  image_url: string;
+
   @Column({ nullable: true, type: 'varchar', length: 64 })
   confirmationToken: string;
 
