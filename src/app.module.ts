@@ -5,6 +5,8 @@ import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { DriversModule } from './modules/drivers/drivers.module';
+import { BankAccountModule } from './modules/bank-account/bank-account.module';
 
 @Module({
   imports: [
@@ -14,6 +16,8 @@ import { join } from 'path';
     }),
     UsersModule,
     AuthModule,
+    DriversModule,
+    BankAccountModule,
   ],
   controllers: [],
   providers: [],

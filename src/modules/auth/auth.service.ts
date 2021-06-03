@@ -1,3 +1,4 @@
+import { CreateDriverDto } from './../drivers/dto/create-driver.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   Injectable,
@@ -10,11 +11,15 @@ import { User } from '../users/users.entity';
 import { UserRole } from '../users/user-role.enum';
 import { CredentialsDto } from './dtos/credentials.dto';
 import { JwtService } from '@nestjs/jwt';
+import { DriversRepository } from '../drivers/drivers.repository';
+import { Driver } from '../drivers/entities/driver.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(UserRepository) private userRepository: UserRepository,
+    @InjectRepository(DriversRepository)
+    private driversRepository: DriversRepository,
     private jwtService: JwtService,
   ) {}
 
@@ -45,5 +50,16 @@ export class AuthService {
       token,
       user,
     };
+  }
+
+  async driverSignUp(createDriverDto: CreateDriverDto): Promise<Driver> {
+    if (createDriverDto.password !== createDriverDto.passwordConfirmation) {
+      throw new UnprocessableEntityException('As senhas não conferem.');
+    } else {
+      return await this.driversRepository.createDriver(
+        createDriverDto,
+        UserRole.DRIVER,
+      );
+    }
   }
 }
