@@ -1,3 +1,4 @@
+import { CredentialsDto } from './../auth/dtos/credentials.dto';
 import { UserRole } from './../users/user-role.enum';
 import { EntityRepository, Repository } from 'typeorm';
 import { CreateDriverDto } from './dto/create-driver.dto';
@@ -60,6 +61,22 @@ export class DriversRepository extends Repository<Driver> {
       } else {
         throw new InternalServerErrorException('Error ao cadastrar usuário.');
       }
+    }
+  }
+
+  async checkCredentials(credentialsDto: CredentialsDto): Promise<Driver> {
+    const { email, password } = credentialsDto;
+
+    const driver = await Driver.findOne({ email });
+
+    if (driver && driver.checkPassword(password)) {
+      delete driver.password;
+      delete driver.confirmationToken;
+      delete driver.salt;
+      delete driver.recoverToken;
+      return driver;
+    } else {
+      return null;
     }
   }
 

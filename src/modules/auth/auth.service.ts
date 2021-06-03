@@ -62,4 +62,27 @@ export class AuthService {
       );
     }
   }
+
+  async driverSignIn(
+    credentialsDto: CredentialsDto,
+  ): Promise<{ token: string; driver: Driver }> {
+    const driver = await this.driversRepository.checkCredentials(
+      credentialsDto,
+    );
+
+    if (!driver) {
+      throw new UnauthorizedException('Credenciais inválidas');
+    }
+
+    const jwtPayload = {
+      id: driver.id,
+    };
+
+    const token = this.jwtService.sign(jwtPayload);
+
+    return {
+      token,
+      driver,
+    };
+  }
 }

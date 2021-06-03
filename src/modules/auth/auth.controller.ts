@@ -4,6 +4,7 @@ import { Driver } from '../drivers/entities/driver.entity';
 import { CreateUserDto } from '../users/dtos/create-user.dto';
 import { User } from '../users/users.entity';
 import { AuthService } from './auth.service';
+import { CredentialsDto } from './dtos/credentials.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -22,9 +23,16 @@ export class AuthController {
   }
 
   @Post('/driver/signup')
-  async createDriver(
+  async driverSignUp(
     @Body() createDriverDto: CreateDriverDto,
   ): Promise<Driver> {
     return await this.authService.driverSignUp(createDriverDto);
+  }
+
+  @Post('/driver/signin')
+  async driverSignIn(
+    @Body() credentialsDto: CredentialsDto,
+  ): Promise<{ token: string; driver: Driver }> {
+    return await this.authService.driverSignIn(credentialsDto);
   }
 }
