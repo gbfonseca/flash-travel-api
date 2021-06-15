@@ -7,6 +7,7 @@ import { join } from 'path';
 import { DriversModule } from './modules/drivers/drivers.module';
 import { BankAccountModule } from './modules/bank-account/bank-account.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { RaceModule } from './modules/race/race.module';
 import configuration from './configs/configuration';
 
 @Module({
@@ -38,6 +39,7 @@ import configuration from './configs/configuration';
     AuthModule,
     DriversModule,
     BankAccountModule,
+    RaceModule,
   ],
   controllers: [],
   providers: [],
